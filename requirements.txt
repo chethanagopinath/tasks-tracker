@@ -2,3 +2,5 @@ streamlit
 google-cloud-firestore
 watchdog
 streamlit-option-menu
+toml
+google-auth-oauthlib

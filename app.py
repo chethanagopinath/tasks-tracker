@@ -1,5 +1,7 @@
 import datetime
 from google.cloud import firestore
+import json
+from google.oauth2 import service_account
 
 import streamlit as st
 from streamlit_option_menu import option_menu
@@ -19,9 +21,9 @@ selected = option_menu(
     orientation="horizontal",
 )
 
-# Authenticate to Firestore with the JSON account key.
-db = firestore.Client.from_service_account_json("firestore-key.json")
-
+key_dict = json.loads(st.secrets["textkey"])
+creds = service_account.Credentials.from_service_account_info(key_dict)
+db = firestore.Client(credentials=creds)
 
 if selected == "Add task":
     task_name = st.text_input('Task name', 'The actual task')
