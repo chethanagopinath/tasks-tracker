@@ -1,7 +1,8 @@
 import datetime
 from google.cloud import firestore
-import json
+from google.cloud.firestore_v1.base_query import FieldFilter
 from google.oauth2 import service_account
+import json
 
 import streamlit as st
 from streamlit_option_menu import option_menu
@@ -44,9 +45,19 @@ if selected == "Add task":
         st.success("Data saved!")
 
 if selected == "See all tasks":
-    # Show all tasks
     tasks_ref = db.collection("tasks")
-    for doc in tasks_ref.stream():
+
+    # tasks_for_current_week = st.button("Tasks for current week")
+
+    # TODO: fix this
+    # if tasks_for_current_week:
+    #     tasks_ref.where(filter=FieldFilter("capital", "==", True))
+    # st.markdown(":violet[Enter date to see tasks for that date]")
+    specific_date = st.date_input("Check for tasks on",datetime.date.today())
+
+    tasks = tasks_ref.where(filter=FieldFilter("due_date", "==", str(specific_date))).stream()
+
+    for doc in tasks:
         task = doc.to_dict()
         task_name = task["name"]
         task_due_date = task["due_date"]
