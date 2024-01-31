@@ -57,7 +57,10 @@ if selected == "See all tasks":
 
     tasks = tasks_ref.where(filter=FieldFilter("due_date", "==", str(specific_date))).stream()
 
+    stream_empty = True
+
     for doc in tasks:
+        stream_empty = False
         task = doc.to_dict()
         task_name = task["name"]
         task_due_date = task["due_date"]
@@ -68,3 +71,6 @@ if selected == "See all tasks":
         st.write(f"due by {task_due_date}")
         with st.expander("Notes"):
             st.write(task_notes)
+
+    if stream_empty:
+        st.subheader("No tasks for this date! Yay! :sparkles:")
